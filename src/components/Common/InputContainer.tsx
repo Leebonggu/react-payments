@@ -29,7 +29,9 @@ function InputContainer({ children, size = 'full', disabled = false }: PropsWith
 
   return (
     <div className={cls(width, 'px-2  flex  justify-center items-center gap-1 rounded-lg my-1', bgStyle)}>
+      label
       {children}
+      error
     </div>
   );
 }

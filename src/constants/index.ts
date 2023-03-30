@@ -3,6 +3,7 @@ import { CardCompany, CompanyColorClassName, CompanyColorHexCode } from '@/types
 export const LIMIT_INPUT_LENGTH = {
   CVC: 3,
   CARD_NUMBER: {
+    TOTAL: 16,
     MIN: 0,
     MAX: 4,
   },

@@ -1,10 +1,9 @@
-import { ChangeEvent, useEffect, useRef } from 'react';
-import { Input, InputContainer } from '@components/Common';
+import { ChangeEvent, useRef, useState } from 'react';
+import { Input } from '@components/Common';
 import { nextSiblingInputFocus, renderTextDivider } from '@/utils';
-import FieldContainer from './FieldContainer';
-import { LIMIT_INPUT_LENGTH, REGEX } from '@/constants';
+import { LIMIT_INPUT_LENGTH, REGEX, VALIDATOR_MESSAGE } from '@/constants';
 import { useCardForm } from '@/context/CardFormContext';
-import { useCardFormValidator } from '@/context/CardFormValidator';
+import FormInputContainer from '../Common/FormInputContainer';
 
 type CardNumberFieldProps = {
   title: string;
@@ -15,9 +14,10 @@ type CardNumberFieldProps = {
 
 function CardNumberField({ title, onChange, minLength = 0, maxLength = 4 }: CardNumberFieldProps) {
   const { cardNumber1, cardNumber2, cardNumber3, cardNumber4 } = useCardForm();
-  const {
-    isValidCardForm: { isValid, msg },
-  } = useCardFormValidator();
+  const [validator, setValidator] = useState({
+    isValid: false,
+    errorMessage: '',
+  });
 
   const fieldRef = useRef<HTMLDivElement | null>(null);
   const cardNumber1Ref = useRef<HTMLInputElement | null>(null);
@@ -25,27 +25,91 @@ function CardNumberField({ title, onChange, minLength = 0, maxLength = 4 }: Card
   const cardNumber3Ref = useRef<HTMLInputElement | null>(null);
   const cardNumber4Ref = useRef<HTMLInputElement | null>(null);
 
-  useEffect(() => {
-    if (cardNumber1.length === LIMIT_INPUT_LENGTH.CARD_NUMBER.MAX) cardNumber2Ref.current?.focus();
-  }, [cardNumber1]);
-
-  useEffect(() => {
-    if (cardNumber2.length === LIMIT_INPUT_LENGTH.CARD_NUMBER.MAX) cardNumber3Ref.current?.focus();
-  }, [cardNumber2]);
-
-  useEffect(() => {
-    if (cardNumber3.length === LIMIT_INPUT_LENGTH.CARD_NUMBER.MAX) cardNumber4Ref.current?.focus();
-  }, [cardNumber3]);
-
-  useEffect(() => {
-    if (cardNumber4.length === LIMIT_INPUT_LENGTH.CARD_NUMBER.MAX) {
+  const onChangeInterceptor = (e: ChangeEvent<HTMLInputElement>) => {
+    const allCardNumber =
+      (cardNumber1Ref.current?.value || '') +
+      cardNumber2Ref.current?.value +
+      cardNumber3Ref.current?.value +
+      cardNumber4Ref.current?.value;
+    if (allCardNumber.length < LIMIT_INPUT_LENGTH.CARD_NUMBER.TOTAL) {
+      setValidator({
+        isValid: false,
+        errorMessage: VALIDATOR_MESSAGE.CARD_NUMBER,
+      });
+    } else {
+      setValidator({
+        isValid: true,
+        errorMessage: '',
+      });
       nextSiblingInputFocus(fieldRef, 0);
     }
-  }, [cardNumber4]);
+    onChange(e);
+  };
 
   return (
-    <FieldContainer title={title} ref={fieldRef} msg={msg}>
-      <InputContainer size="full" error={!isValid}>
+    <FormInputContainer ref={fieldRef} label={title} isValid={validator.isValid} errorMessage={validator.errorMessage}>
+      <div className="flex items-center">
+        <Input
+          ref={cardNumber1Ref}
+          type="text"
+          minLength={minLength}
+          maxLength={maxLength}
+          pattern={REGEX.HTML_PATTERN.ONLY_NUMBER}
+          value={cardNumber1}
+          name="cardNumber1"
+          onChange={onChangeInterceptor}
+          autoComplete="off"
+          error={!validator.isValid}
+        />
+        {renderTextDivider({ formerValue: cardNumber1, latterValue: cardNumber2, divider: '-' })}
+        <Input
+          ref={cardNumber2Ref}
+          type="text"
+          minLength={0}
+          maxLength={4}
+          pattern={REGEX.HTML_PATTERN.ONLY_NUMBER}
+          value={cardNumber2}
+          name="cardNumber2"
+          onChange={onChangeInterceptor}
+          autoComplete="off"
+          error={!validator.isValid}
+        />
+        {renderTextDivider({ formerValue: cardNumber2, latterValue: cardNumber3, divider: '-' })}
+        <Input
+          ref={cardNumber3Ref}
+          type="password"
+          minLength={0}
+          maxLength={4}
+          pattern={REGEX.HTML_PATTERN.ONLY_NUMBER}
+          value={cardNumber3}
+          name="cardNumber3"
+          onChange={onChangeInterceptor}
+          autoComplete="off"
+          error={!validator.isValid}
+        />
+        {renderTextDivider({ formerValue: cardNumber3, latterValue: cardNumber4, divider: '-' })}
+        <Input
+          ref={cardNumber4Ref}
+          type="password"
+          minLength={0}
+          maxLength={4}
+          pattern={REGEX.HTML_PATTERN.ONLY_NUMBER}
+          value={cardNumber4}
+          name="cardNumber4"
+          onChange={onChangeInterceptor}
+          autoComplete="off"
+          error={!validator.isValid}
+        />
+      </div>
+    </FormInputContainer>
+  );
+}
+
+export default CardNumberField;
+
+/**
+ *     <FieldContainer title={title} ref={fieldRef} msg={msg}>
+      <InputContainer size="full" error={msg?.length > 0 && !isValid}>
         <Input
           ref={cardNumber1Ref}
           type="text"
@@ -56,7 +120,7 @@ function CardNumberField({ title, onChange, minLength = 0, maxLength = 4 }: Card
           name="cardNumber1"
           onChange={onChange}
           autoComplete="off"
-          error={!isValid}
+          // error={!isValid}
         />
         {renderTextDivider({ formerValue: cardNumber1, latterValue: cardNumber2, divider: '-' })}
         <Input
@@ -69,7 +133,7 @@ function CardNumberField({ title, onChange, minLength = 0, maxLength = 4 }: Card
           name="cardNumber2"
           onChange={onChange}
           autoComplete="off"
-          error={!isValid}
+          // error={!isValid}
         />
         {renderTextDivider({ formerValue: cardNumber2, latterValue: cardNumber3, divider: '-' })}
         <Input
@@ -82,7 +146,7 @@ function CardNumberField({ title, onChange, minLength = 0, maxLength = 4 }: Card
           name="cardNumber3"
           onChange={onChange}
           autoComplete="off"
-          error={!isValid}
+          // error={!isValid}
         />
         {renderTextDivider({ formerValue: cardNumber3, latterValue: cardNumber4, divider: '-' })}
         <Input
@@ -95,11 +159,8 @@ function CardNumberField({ title, onChange, minLength = 0, maxLength = 4 }: Card
           name="cardNumber4"
           onChange={onChange}
           autoComplete="off"
-          error={!isValid}
+          // error={!isValid}
         />
       </InputContainer>
     </FieldContainer>
-  );
-}
-
-export default CardNumberField;
+ */

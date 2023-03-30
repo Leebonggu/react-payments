@@ -1,11 +1,9 @@
-import FieldContainer from './FieldContainer';
-import { Input, InputContainer } from '../Common';
+import { FormInputContainer, Input } from '../Common';
 
-import { ChangeEvent, HTMLInputTypeAttribute, useEffect, useRef } from 'react';
+import { ChangeEvent, HTMLInputTypeAttribute, useRef, useState } from 'react';
 import { useCardForm } from '@/context/CardFormContext';
-import { LIMIT_INPUT_LENGTH, REGEX } from '@/constants';
+import { LIMIT_INPUT_LENGTH, REGEX, VALIDATOR_MESSAGE } from '@/constants';
 import { nextSiblingInputFocus } from '@/utils';
-import { useCardFormValidator } from '@/context/CardFormValidator';
 
 type CVCFieldProps = {
   title: string;
@@ -18,35 +16,48 @@ type CVCFieldProps = {
 
 function CVCField({ title, placeholder, maxLength, name, type = 'text', onChange }: CVCFieldProps) {
   const { cvc } = useCardForm();
-  const {
-    isValidCVCdForm: { isValid, msg },
-  } = useCardFormValidator();
+  const [validator, setValidator] = useState({
+    isValid: false,
+    errorMessage: '',
+  });
 
   const fieldRef = useRef<HTMLDivElement | null>(null);
-  const cvcRef = useRef<HTMLInputElement | null>(null);
 
-  useEffect(() => {
-    if (cvc.length === LIMIT_INPUT_LENGTH.CVC) {
+  const onChangeInterceptor = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.length < LIMIT_INPUT_LENGTH.CVC) {
+      setValidator({
+        isValid: false,
+        errorMessage: VALIDATOR_MESSAGE.CVC,
+      });
+    } else {
+      setValidator({
+        isValid: true,
+        errorMessage: '',
+      });
       nextSiblingInputFocus(fieldRef, 0);
     }
-  }, [cvc]);
+    onChange(e);
+  };
 
   return (
-    <FieldContainer title={title} ref={fieldRef} msg={msg}>
-      <InputContainer size="quarter" error={!isValid}>
-        <Input
-          type={type}
-          ref={cvcRef}
-          name={name}
-          pattern={REGEX.HTML_PATTERN.ONLY_NUMBER}
-          value={cvc}
-          placeholder={placeholder}
-          maxLength={maxLength}
-          onChange={onChange}
-          error={!isValid}
-        />
-      </InputContainer>
-    </FieldContainer>
+    <FormInputContainer
+      ref={fieldRef}
+      label={title}
+      isValid={validator.isValid}
+      errorMessage={validator.errorMessage}
+      size="quarter"
+    >
+      <Input
+        type={type}
+        name={name}
+        pattern={REGEX.HTML_PATTERN.ONLY_NUMBER}
+        value={cvc}
+        placeholder={placeholder}
+        maxLength={maxLength}
+        onChange={onChangeInterceptor}
+        error={!validator.isValid}
+      />
+    </FormInputContainer>
   );
 }
 

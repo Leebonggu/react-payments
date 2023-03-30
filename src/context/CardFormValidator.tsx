@@ -4,7 +4,7 @@ import { LIMIT_INPUT_LENGTH, VALIDATOR_MESSAGE } from '@/constants';
 
 type Validator = {
   isValid: boolean;
-  msg?: string;
+  msg: string;
 };
 type CardFormValidator = {
   isValidCardForm: Validator;
@@ -53,8 +53,8 @@ function CardFormValidatorProvider({ children }: PropsWithChildren) {
   const { cardNumber1, cardNumber2, cardNumber3, cardNumber4, month, year, cvc, password1, password2, cardCompany } =
     useCardForm();
 
+  const allCardNumber = `${cardNumber1}${cardNumber2}${cardNumber3}${cardNumber4}`;
   useEffect(() => {
-    const allCardNumber = `${cardNumber1}${cardNumber2}${cardNumber3}${cardNumber4}`;
     if (allCardNumber.length < 16) {
       setIsValidCardForm({
         isValid: false,

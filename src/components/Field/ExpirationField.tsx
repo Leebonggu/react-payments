@@ -1,11 +1,9 @@
-import { Input, InputContainer } from '@components/Common';
+import { FormInputContainer, Input } from '@components/Common';
 import { nextSiblingInputFocus, renderTextDivider } from '@/utils';
-import FieldContainer from './FieldContainer';
 
-import { ChangeEvent, HTMLInputTypeAttribute, useEffect, useRef } from 'react';
+import { ChangeEvent, HTMLInputTypeAttribute, useEffect, useRef, useState } from 'react';
 import { useCardForm } from '@/context/CardFormContext';
-import { LIMIT_INPUT_LENGTH, REGEX } from '@/constants';
-import { useCardFormValidator } from '@/context/CardFormValidator';
+import { LIMIT_INPUT_LENGTH, REGEX, VALIDATOR_MESSAGE } from '@/constants';
 
 type ExpirationFieldProps = {
   title: string;
@@ -17,55 +15,122 @@ type ExpirationFieldProps = {
 
 function ExpirationField({ title, maxLength, type = 'text', onChange }: ExpirationFieldProps) {
   const { month, year } = useCardForm();
-  const {
-    isValidExpirationForm: { isValid, msg },
-  } = useCardFormValidator();
+  const [monthValidator, setMonthValidator] = useState({
+    isValid: false,
+    errorMessage: '',
+  });
+  const [yearValidator, setYearValidator] = useState({
+    isValid: false,
+    errorMessage: '',
+  });
 
   const fieldRef = useRef<HTMLDivElement | null>(null);
-  const monthRef = useRef<HTMLInputElement | null>(null);
-  const yearRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
-    if (month.length === LIMIT_INPUT_LENGTH.EXPIRATION) {
-      yearRef.current?.focus();
-    }
-  }, [month]);
-
-  useEffect(() => {
-    if (year.length === LIMIT_INPUT_LENGTH.EXPIRATION) {
+    if (year && month && monthValidator.isValid && yearValidator.isValid) {
       nextSiblingInputFocus(fieldRef, 0);
     }
   }, [year]);
 
+  const onChangeInterceptor = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    const monthValidator = (value: string) => {
+      if (value.length < LIMIT_INPUT_LENGTH.EXPIRATION) {
+        return {
+          isValid: false,
+          errorMessage: VALIDATOR_MESSAGE.EXPIRATION.LENGTH,
+        };
+      }
+      if (Number(value) <= 0 || Number(value) > 12) {
+        return {
+          isValid: false,
+          errorMessage: VALIDATOR_MESSAGE.EXPIRATION.MONTH_RANGE,
+        };
+      }
+      return {
+        isValid: true,
+        errorMessage: '',
+      };
+    };
+
+    const yearValidator = (value: string) => {
+      if (value.length < LIMIT_INPUT_LENGTH.EXPIRATION) {
+        return {
+          isValid: false,
+          errorMessage: VALIDATOR_MESSAGE.EXPIRATION.LENGTH,
+        };
+      }
+
+      return {
+        isValid: true,
+        errorMessage: '',
+      };
+    };
+
+    const validatorFunc = name === 'month' ? monthValidator : yearValidator;
+    const validator = validatorFunc(value);
+    const setState = name === 'month' ? setMonthValidator : setYearValidator;
+
+    setState(validator);
+    onChange(e);
+  };
+
   return (
-    <FieldContainer title={title} ref={fieldRef} msg={msg}>
-      <InputContainer size="half" error={!isValid}>
+    <FormInputContainer
+      ref={fieldRef}
+      label={title}
+      isValid={monthValidator.isValid && yearValidator.isValid}
+      errorMessage={monthValidator.errorMessage || yearValidator.errorMessage}
+      size="half"
+    >
+      <div className="flex items-center">
         <Input
           type={type}
-          ref={monthRef}
           name="month"
           placeholder="MM"
           pattern={REGEX.HTML_PATTERN.ONLY_NUMBER}
           maxLength={maxLength}
           value={month}
-          onChange={onChange}
-          error={!isValid}
+          onChange={onChangeInterceptor}
+          onFocus={onChange}
+          error={!monthValidator.isValid}
         />
         {renderTextDivider({ formerValue: month, divider: '/' })}
         <Input
           type={type}
-          ref={yearRef}
           name="year"
           placeholder="YY"
           pattern={REGEX.HTML_PATTERN.ONLY_NUMBER}
           maxLength={maxLength}
           value={year}
-          onChange={onChange}
-          error={!isValid}
+          onChange={onChangeInterceptor}
+          onFocus={onChange}
+          error={!yearValidator.isValid}
         />
-      </InputContainer>
-    </FieldContainer>
+      </div>
+    </FormInputContainer>
   );
 }
 
 export default ExpirationField;
+
+{
+  /* <FormInputContainer
+ref={fieldRef}
+label={title}
+isValid={validator.isValid}
+errorMessage={validator.errorMessage}
+size="quarter"
+>
+<Input
+  type={type}
+  name={name}
+  pattern={REGEX.HTML_PATTERN.ONLY_NUMBER}
+  value={cvc}
+  placeholder={placeholder}
+  maxLength={maxLength}
+  onChange={onChangeInterceptor}
+  error={!validator.isValid}
+/> */
+}
