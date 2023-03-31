@@ -14,13 +14,17 @@ function CompleteForm() {
   const { id, cardForm, isEditMode } = useLocationState<{ cardForm: CardInformation; isEditMode: boolean }>();
 
   const { onChange, onReset, updateCardForm } = useCardFormHandler();
-  const { updateCard, deleteCard } = useCardListHandler();
+  const { updateCard, deleteCard, addCard } = useCardListHandler();
   const { nickname } = useCardForm();
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    updateCard(id as string, { nickname: nickname || cardForm.cardCompany });
+    if (isEditMode) {
+      updateCard(id as string, { nickname: nickname || cardForm.cardCompany });
+    } else {
+      addCard({ ...cardForm, id: id as string, nickname: nickname || cardForm.cardCompany });
+    }
 
     onReset();
     navigate('/');

@@ -1,6 +1,6 @@
 import { LIMIT_INPUT_LENGTH } from '@/constants';
 import { Button } from '../Common';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FormEvent, useEffect } from 'react';
 import { useCardListHandler } from '@/context/CardListContext';
 import { useCardForm, useCardFormHandler } from '@/context/CardFormContext';
@@ -10,13 +10,13 @@ import { CardInformation } from '@/types';
 
 function CompleteForm() {
   const navigate = useNavigate();
-  const { id } = useParams();
 
-  const { cardForm, isEditMode } = useLocationState<{ cardForm: CardInformation; isEditMode: boolean }>();
+  const { cardForm, isEditMode, id } = useLocationState<{ cardForm: CardInformation; isEditMode: boolean }>();
 
-  const { onChange, onReset, updateCardForm } = useCardFormHandler();
-  const { updateCard, deleteCard } = useCardListHandler();
   const { nickname } = useCardForm();
+  const { onChange, onReset, updateCardForm } = useCardFormHandler();
+
+  const { updateCard, deleteCard } = useCardListHandler();
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

@@ -6,13 +6,12 @@ import { LIMIT_INPUT_LENGTH } from '@/constants';
 
 import type { FormEvent } from 'react';
 import { useCardForm, useCardFormHandler } from '@/context/CardFormContext';
-import { useCardListHandler } from '@/context/CardListContext';
+// import { useCardListHandler } from '@/context/CardListContext';
 import { useCardFormValidator } from '@/context/CardFormValidator';
 
 function AddCardForm() {
   const navigate = useNavigate();
 
-  const { addCard } = useCardListHandler();
   const cardForm = useCardForm();
   const { onChange } = useCardFormHandler();
   const { isAllValid } = useCardFormValidator();
@@ -21,13 +20,11 @@ function AddCardForm() {
     e.preventDefault();
 
     const id = crypto.randomUUID();
-    addCard({ ...cardForm, id });
-
     navigate(`/complete/${id}`, { state: { cardForm } });
   };
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col nowrap">
+    <form onSubmit={onSubmit} className="flex flex-col nowrap gap-1">
       <CardNumberField
         title="카드 번호"
         onChange={onChange}

@@ -24,6 +24,8 @@ function ExpirationField({ title, maxLength, type = 'text', onChange }: Expirati
     errorMessage: '',
   });
 
+  const monthRef = useRef<HTMLInputElement | null>(null);
+  const yearRef = useRef<HTMLInputElement | null>(null);
   const fieldRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -31,6 +33,12 @@ function ExpirationField({ title, maxLength, type = 'text', onChange }: Expirati
       nextSiblingInputFocus(fieldRef, 0);
     }
   }, [year]);
+
+  useEffect(() => {
+    if (monthRef.current && monthValidator.isValid) {
+      yearRef.current?.focus();
+    }
+  }, [month]);
 
   const onChangeInterceptor = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -86,6 +94,7 @@ function ExpirationField({ title, maxLength, type = 'text', onChange }: Expirati
     >
       <div className="flex items-center">
         <Input
+          ref={monthRef}
           type={type}
           name="month"
           placeholder="MM"
@@ -98,6 +107,7 @@ function ExpirationField({ title, maxLength, type = 'text', onChange }: Expirati
         />
         {renderTextDivider({ formerValue: month, divider: '/' })}
         <Input
+          ref={yearRef}
           type={type}
           name="year"
           placeholder="YY"

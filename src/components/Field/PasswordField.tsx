@@ -1,9 +1,7 @@
-import FieldContainer from './FieldContainer';
-import { Input, InputContainer } from '../Common';
-import { ChangeEvent, useEffect, useRef } from 'react';
-import { LIMIT_INPUT_LENGTH, REGEX } from '@/constants';
+import { FormInputContainer, Input } from '../Common';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { LIMIT_INPUT_LENGTH, REGEX, VALIDATOR_MESSAGE } from '@/constants';
 import { useCardForm } from '@/context/CardFormContext';
-import { useCardFormValidator } from '@/context/CardFormValidator';
 
 type PasswordFieldProps = {
   title: string;
@@ -12,12 +10,27 @@ type PasswordFieldProps = {
 
 function PasswordField({ title, onChange }: PasswordFieldProps) {
   const { password1, password2 } = useCardForm();
-  const {
-    isValidPasswordForm: { isValid, msg },
-  } = useCardFormValidator();
+  const [validator, setValidator] = useState({
+    isValid: false,
+    errorMessage: '',
+  });
 
-  const password1Ref = useRef<HTMLInputElement | null>(null);
   const password2Ref = useRef<HTMLInputElement | null>(null);
+
+  const onChangeInterceptor = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.length < LIMIT_INPUT_LENGTH.PASSWORD) {
+      setValidator({
+        isValid: false,
+        errorMessage: VALIDATOR_MESSAGE.PASSWORD,
+      });
+    } else {
+      setValidator({
+        isValid: true,
+        errorMessage: '',
+      });
+    }
+    onChange(e);
+  };
 
   useEffect(() => {
     if (password1.length === LIMIT_INPUT_LENGTH.PASSWORD) {
@@ -26,41 +39,50 @@ function PasswordField({ title, onChange }: PasswordFieldProps) {
   }, [password1]);
 
   return (
-    <FieldContainer title={title} msg={msg}>
-      <div className="flex w-1/2 gap-2">
-        <InputContainer size="quarter" error={!password1 && !isValid}>
-          <Input
-            type="password"
-            ref={password1Ref}
-            name="password1"
-            pattern={REGEX.HTML_PATTERN.ONLY_NUMBER}
-            maxLength={LIMIT_INPUT_LENGTH.PASSWORD}
-            value={password1}
-            onChange={onChange}
-            error={!isValid}
-          />
-        </InputContainer>
-        <InputContainer size="quarter" error={!password2 && !isValid}>
-          <Input
-            type="password"
-            ref={password2Ref}
-            name="password2"
-            pattern={REGEX.HTML_PATTERN.ONLY_NUMBER}
-            maxLength={LIMIT_INPUT_LENGTH.PASSWORD}
-            value={password2}
-            onChange={onChange}
-            error={!isValid}
-          />
-        </InputContainer>
-        <InputContainer size="quarter" disabled>
-          <Input type="password" pattern={REGEX.HTML_PATTERN.ONLY_NUMBER} value="*" disabled />
-        </InputContainer>
-        <InputContainer size="quarter" disabled>
-          <Input type="password" pattern={REGEX.HTML_PATTERN.ONLY_NUMBER} value="*" disabled />
-        </InputContainer>
+    <FormInputContainer
+      label={title || ''}
+      size="half"
+      isValid={validator.isValid}
+      errorMessage={validator.errorMessage}
+    >
+      <div className="flex">
+        <Input
+          type="password"
+          name="password1"
+          pattern={REGEX.HTML_PATTERN.ONLY_NUMBER}
+          maxLength={LIMIT_INPUT_LENGTH.PASSWORD}
+          value={password1}
+          onChange={onChangeInterceptor}
+          onFocus={onChangeInterceptor}
+          error={!password1 && !validator.isValid}
+        />
+        <Input
+          type="password"
+          ref={password2Ref}
+          name="password2"
+          pattern={REGEX.HTML_PATTERN.ONLY_NUMBER}
+          maxLength={LIMIT_INPUT_LENGTH.PASSWORD}
+          value={password2}
+          onChange={onChangeInterceptor}
+          onFocus={onChangeInterceptor}
+          error={!password2 && !validator.isValid}
+        />
+        <Input type="password" pattern={REGEX.HTML_PATTERN.ONLY_NUMBER} value="*" disabled />
+        <Input type="password" pattern={REGEX.HTML_PATTERN.ONLY_NUMBER} value="*" disabled />
       </div>
-    </FieldContainer>
+    </FormInputContainer>
   );
+}
+
+{
+  /* <Input
+  name={name}
+  kind={kind}
+  placeholder={placeholder}
+  maxLength={maxLength}
+  value={value}
+  onChange={onChange}
+/> */
 }
 
 export default PasswordField;

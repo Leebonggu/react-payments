@@ -31,17 +31,15 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         onChange={onChange}
         disabled={disabled}
         className={cls(
-          'h-8 outline-none  bg-transparent',
-          'flex items-center justify-center text-center',
-          'mx-1',
           widthSize,
+          'h-10 mx-1 flex items-center justify-center text-center',
+          'outline-none  bg-transparent ',
           kind === 'underline' ? 'border-b-2 border-gray-200' : '',
           'placeholder:text-sm',
           'border-2 border-gray-200 rounded-md',
           error
-            ? 'focus:border-red-100 focus:bg-red-200 focus:border-2 focus:border-solid focus:rounded'
-            : 'focus:border-blue-100 focus:bg-blue-100 focus:border-2 focus:border-solid focus:rounded',
-          !error ? 'border-[1px] border-blue-300' : '',
+            ? 'focus:border-red-100 focus:border-2 focus:border-solid focus:rounded'
+            : 'border-[1px] border-blue-300 focus:border-blue-100 focus:bg-blue-100 focus:border-2 focus:border-solid focus:rounded',
         )}
       />
     );

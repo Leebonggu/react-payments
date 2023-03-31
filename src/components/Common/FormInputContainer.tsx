@@ -22,10 +22,10 @@ const FormInputContainer = forwardRef<HTMLDivElement, PropsWithChildren<FormInpu
   ({ children, label, latterCount, errorMessage, isValid, size = 'full' }, ref) => {
     const inputWidth = inputWidthMap[size] || 'w-full';
     return (
-      <div ref={ref}>
+      <div ref={ref} className="flex flex-col">
         <div className="px-1 flex justify-between text-sm text-gray-400">
           <span className="text-sm text-gray-400">{label}</span>
-          {latterCount ? <span>{latterCount}111</span> : null}
+          {latterCount ? <span>{latterCount}</span> : null}
         </div>
         <div className={cls(inputWidth, 'p-1 rounded-md')}>{children}</div>
         <div>{!isValid && errorMessage ? <span className="text-xs text-red-400">{errorMessage}</span> : null}</div>

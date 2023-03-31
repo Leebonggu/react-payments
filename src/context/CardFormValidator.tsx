@@ -120,7 +120,6 @@ function CardFormValidatorProvider({ children }: PropsWithChildren) {
   }, [password1, password2]);
 
   useEffect(() => {
-    console.log(cardCompany);
     if (!cardCompany) {
       setIsValidCardCompanyForm({
         isValid: false,
