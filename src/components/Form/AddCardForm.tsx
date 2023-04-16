@@ -13,7 +13,7 @@ function AddCardForm() {
   const navigate = useNavigate();
 
   const cardForm = useCardForm();
-  const { onChange } = useCardFormHandler();
+  const { onChange, updateCardForm } = useCardFormHandler();
   const { isAllValid } = useCardFormValidator();
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -28,6 +28,7 @@ function AddCardForm() {
       <CardNumberField
         title="카드 번호"
         onChange={onChange}
+        updateForm={updateCardForm}
         minLength={LIMIT_INPUT_LENGTH.CARD_NUMBER.MIN}
         maxLength={LIMIT_INPUT_LENGTH.CARD_NUMBER.MAX}
       />

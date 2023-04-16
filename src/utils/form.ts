@@ -1,4 +1,4 @@
-import { REGEX } from '@/constants';
+import { CARD_COMPANY_LIST, REGEX } from '@/constants';
 import { CardInformationWithoutId } from '@/types';
 import { MutableRefObject } from 'react';
 
@@ -45,4 +45,16 @@ export const textOnlyFormatter = (str: string) => {
 
 export const nextSiblingInputFocus = (ref: MutableRefObject<HTMLDivElement | null>, index = 0) => {
   return ref.current?.nextElementSibling?.querySelectorAll('input')[index]?.focus();
+};
+
+export const stringNumberToSum = (numbers: string) => {
+  return numbers.split('').reduce((acc, cur) => (acc += Number(cur)), 0);
+};
+
+export const getTargetCardCompanyName = (cardNumberSum: number) => {
+  const cardCompany = CARD_COMPANY_LIST.find(
+    company => company.companyIdentification === (cardNumberSum % CARD_COMPANY_LIST.length) + 1,
+  );
+
+  return cardCompany?.companyName;
 };

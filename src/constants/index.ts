@@ -35,15 +35,15 @@ export const HEADER_TITLE = {
   EDIT_CARD: '카드 별칭을 수정해주세요.',
 };
 
-const CARD_COMPANY_LIST_SET: [string, string, CompanyColorHexCode, string][] = [
-  ['Number1', 'amber', '#fbbf24', '111111111'],
-  ['Number2', 'lime', '#a3e635', '222222222'],
-  ['Number3', 'green', '#4ade80', '333333333'],
-  ['Number4', 'cyan', '#818cf8', '444444444'],
-  ['Number5', 'indigo', '#f472b6', '555555555'],
-  ['Number6', 'pink', '#fb7185', '666666666'],
-  ['Number7', 'rose', '#60a5fa', '777777777'],
-  ['Number8', 'red', '#f87171', '888888888'],
+const CARD_COMPANY_LIST_SET: [string, string, CompanyColorHexCode, number][] = [
+  ['Number1', 'amber', '#fbbf24', 1],
+  ['Number2', 'lime', '#a3e635', 2],
+  ['Number3', 'green', '#4ade80', 3],
+  ['Number4', 'cyan', '#818cf8', 4],
+  ['Number5', 'indigo', '#f472b6', 5],
+  ['Number6', 'pink', '#fb7185', 6],
+  ['Number7', 'rose', '#60a5fa', 7],
+  ['Number8', 'red', '#f87171', 8],
 ];
 
 enum Index {

@@ -1,18 +1,20 @@
 import { ChangeEvent, useRef, useState } from 'react';
 import { Input } from '@components/Common';
-import { nextSiblingInputFocus, renderTextDivider } from '@/utils';
+import { getTargetCardCompanyName, nextSiblingInputFocus, renderTextDivider, stringNumberToSum } from '@/utils';
 import { LIMIT_INPUT_LENGTH, REGEX, VALIDATOR_MESSAGE } from '@/constants';
 import { useCardForm } from '@/context/CardFormContext';
 import FormInputContainer from '../Common/FormInputContainer';
+import { CardInformation } from '@/types';
 
 type CardNumberFieldProps = {
   title: string;
   minLength: number;
   maxLength: number;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  updateForm: (cardForm: Partial<CardInformation>) => void;
 };
 
-function CardNumberField({ title, onChange, minLength = 0, maxLength = 4 }: CardNumberFieldProps) {
+function CardNumberField({ title, minLength = 0, maxLength = 4, onChange, updateForm }: CardNumberFieldProps) {
   const { cardNumber1, cardNumber2, cardNumber3, cardNumber4 } = useCardForm();
   const [validator, setValidator] = useState({
     isValid: false,
@@ -26,6 +28,13 @@ function CardNumberField({ title, onChange, minLength = 0, maxLength = 4 }: Card
   const cardNumber4Ref = useRef<HTMLInputElement | null>(null);
 
   const onChangeInterceptor = (e: ChangeEvent<HTMLInputElement>) => {
+    if (cardNumber1Ref.current?.value.length === 4 && cardNumber2Ref.current?.value.length === 4) {
+      const cardNumberSum = stringNumberToSum(`${cardNumber1Ref.current?.value}${cardNumber2Ref.current?.value}`);
+      const targetCompany = getTargetCardCompanyName(cardNumberSum);
+
+      updateForm({ cardCompany: targetCompany });
+    }
+
     const allCardNumber =
       (cardNumber1Ref.current?.value || '') +
       cardNumber2Ref.current?.value +
@@ -43,6 +52,7 @@ function CardNumberField({ title, onChange, minLength = 0, maxLength = 4 }: Card
       });
       nextSiblingInputFocus(fieldRef, 0);
     }
+
     onChange(e);
   };
 

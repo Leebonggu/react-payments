@@ -49,7 +49,7 @@ export type CardCompany = {
   companyName: string;
   companyColorClassName: CompanyColorClassName;
   companyColorHexCode: CompanyColorHexCode;
-  companyIdentification: string;
+  companyIdentification: number;
 };
 
 export type ModalType = 'cardCompanySelectModal';
