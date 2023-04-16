@@ -9,7 +9,7 @@ interface ModalProps {
 const ModalContext = createContext<{
   open: boolean;
   modalType: ModalType | null;
-  openModal: (modalType: ModalType) => void;
+  openModal: (modalType: ModalType, props?: ModalProps) => void;
   modalProps: ModalProps | null;
   closeModal: () => void;
 } | null>(null);
@@ -24,14 +24,14 @@ const useModalContext = () => {
   return value;
 };
 
-function ModalProvider<T = unknown>({ children }: PropsWithChildren) {
+function ModalProvider({ children }: PropsWithChildren) {
   const [open, setOpen] = useState(false);
   const [modalType, setModalType] = useState<ModalType | null>(null);
   const [modalProps, setModalProps] = useState<ModalProps | null>(null);
 
   const dispatch = useMemo(
     () => ({
-      openModal: (modalType: ModalType, props?: T) => {
+      openModal: (modalType: ModalType, props?: ModalProps) => {
         setOpen(true);
         setModalType(modalType);
         if (props) {

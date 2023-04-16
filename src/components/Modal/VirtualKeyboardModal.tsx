@@ -3,6 +3,10 @@ import { useModalContext } from '@/context/ModalContext';
 
 const CARD_NUMBER = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
+interface Props {
+  a: number;
+}
+
 function VirtualKeyboardModal() {
   const { modalProps } = useModalContext();
   const onClick = () => console.log;

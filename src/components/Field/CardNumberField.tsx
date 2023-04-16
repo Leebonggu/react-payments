@@ -31,7 +31,9 @@ function CardNumberField({ title, minLength = 0, maxLength = 4, onChange, update
   const cardNumber4Ref = useRef<HTMLInputElement | null>(null);
 
   const onFocus = () => {
-    openModal('virtualCardKeyboard');
+    openModal('virtualCardKeyboard', {
+      a: 1,
+    });
   };
 
   const onBlur = () => {
