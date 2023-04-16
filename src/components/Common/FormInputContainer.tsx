@@ -30,7 +30,7 @@ const FormInputContainer = forwardRef<HTMLDivElement, PropsWithChildren<FormInpu
         </div>
         <div className={cls(inputWidth, 'p-1 rounded-md flex items-center')}>
           {children}
-          {addOn ? addOn : null}
+          <div className="w-10">{addOn ? addOn : null}</div>
         </div>
         <div>{!isValid && errorMessage ? <span className="text-xs text-red-400">{errorMessage}</span> : null}</div>
       </div>

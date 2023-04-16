@@ -51,6 +51,7 @@ function Card({ cardOwner, cardCompany, cardNumber, expiration, size = 'sm', isE
         bgColor,
         'flex flex-col items-center justify-evenly w-[200px] h-[130px] py-2 px-4  rounded-lg',
         'relative overflow-hidden',
+        'text-xs',
       )}
     >
       <div className="w-full flex-1">
