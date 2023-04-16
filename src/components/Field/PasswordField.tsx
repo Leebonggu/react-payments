@@ -74,15 +74,4 @@ function PasswordField({ title, onChange }: PasswordFieldProps) {
   );
 }
 
-{
-  /* <Input
-  name={name}
-  kind={kind}
-  placeholder={placeholder}
-  maxLength={maxLength}
-  value={value}
-  onChange={onChange}
-/> */
-}
-
 export default PasswordField;

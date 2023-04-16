@@ -124,23 +124,3 @@ function ExpirationField({ title, maxLength, type = 'text', onChange }: Expirati
 }
 
 export default ExpirationField;
-
-{
-  /* <FormInputContainer
-ref={fieldRef}
-label={title}
-isValid={validator.isValid}
-errorMessage={validator.errorMessage}
-size="quarter"
->
-<Input
-  type={type}
-  name={name}
-  pattern={REGEX.HTML_PATTERN.ONLY_NUMBER}
-  value={cvc}
-  placeholder={placeholder}
-  maxLength={maxLength}
-  onChange={onChangeInterceptor}
-  error={!validator.isValid}
-/> */
-}
