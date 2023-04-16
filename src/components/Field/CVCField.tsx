@@ -45,7 +45,8 @@ function CVCField({ title, placeholder, maxLength, name, type = 'text', onChange
       label={title}
       isValid={validator.isValid}
       errorMessage={validator.errorMessage}
-      size="quarter"
+      size="half"
+      addOn={<div>Hello</div>}
     >
       <Input
         type={type}

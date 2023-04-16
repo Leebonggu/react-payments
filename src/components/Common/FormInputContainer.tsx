@@ -19,7 +19,7 @@ const inputWidthMap: Record<Size, string> = {
 };
 
 const FormInputContainer = forwardRef<HTMLDivElement, PropsWithChildren<FormInputContainerProps>>(
-  ({ children, label, latterCount, errorMessage, isValid, size = 'full' }, ref) => {
+  ({ children, label, latterCount, errorMessage, isValid, size = 'full', addOn }, ref) => {
     const inputWidth = inputWidthMap[size] || 'w-full';
     return (
       <div ref={ref} className="flex flex-col">
@@ -27,7 +27,10 @@ const FormInputContainer = forwardRef<HTMLDivElement, PropsWithChildren<FormInpu
           <span className="text-sm text-gray-400">{label}</span>
           {latterCount ? <span>{latterCount}</span> : null}
         </div>
-        <div className={cls(inputWidth, 'p-1 rounded-md')}>{children}</div>
+        <div className={cls(inputWidth, 'p-1 rounded-md flex items-center')}>
+          {children}
+          {addOn ? addOn : null}
+        </div>
         <div>{!isValid && errorMessage ? <span className="text-xs text-red-400">{errorMessage}</span> : null}</div>
       </div>
     );
