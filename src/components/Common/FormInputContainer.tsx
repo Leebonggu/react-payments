@@ -1,7 +1,7 @@
 import { cls } from '@/utils';
 import { PropsWithChildren, ReactNode, forwardRef } from 'react';
 
-type Size = 'full' | 'half' | 'quarter';
+type Size = 'full' | 'half' | 'third' | 'quarter';
 
 interface FormInputContainerProps {
   label: string;
@@ -15,6 +15,7 @@ interface FormInputContainerProps {
 const inputWidthMap: Record<Size, string> = {
   full: 'w-full',
   half: 'w-1/2',
+  third: 'w-1/3',
   quarter: 'w-1/4',
 };
 

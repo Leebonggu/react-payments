@@ -4,6 +4,7 @@ import { ChangeEvent, HTMLInputTypeAttribute, useRef, useState } from 'react';
 import { useCardForm } from '@/context/CardFormContext';
 import { LIMIT_INPUT_LENGTH, REGEX, VALIDATOR_MESSAGE } from '@/constants';
 import { nextSiblingInputFocus } from '@/utils';
+import Tooltip from '../Common/Tooltip';
 
 type CVCFieldProps = {
   title: string;
@@ -45,8 +46,8 @@ function CVCField({ title, placeholder, maxLength, name, type = 'text', onChange
       label={title}
       isValid={validator.isValid}
       errorMessage={validator.errorMessage}
-      size="half"
-      addOn={<div>Hello</div>}
+      size="third"
+      addOn={<Tooltip message="카드 뒷면의 3자리 숫자를 입력해주세요." />}
     >
       <Input
         type={type}
