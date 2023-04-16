@@ -58,3 +58,7 @@ export const getTargetCardCompanyName = (cardNumberSum: number) => {
 
   return cardCompany?.companyName;
 };
+
+export const shuffle = (array: number[]) => {
+  return array.sort(() => Math.random() - 0.5);
+};

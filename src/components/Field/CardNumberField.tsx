@@ -5,6 +5,7 @@ import { LIMIT_INPUT_LENGTH, REGEX, VALIDATOR_MESSAGE } from '@/constants';
 import { useCardForm } from '@/context/CardFormContext';
 import FormInputContainer from '../Common/FormInputContainer';
 import { CardInformation } from '@/types';
+import { useModalContext } from '@/context/ModalContext';
 
 type CardNumberFieldProps = {
   title: string;
@@ -16,6 +17,8 @@ type CardNumberFieldProps = {
 
 function CardNumberField({ title, minLength = 0, maxLength = 4, onChange, updateForm }: CardNumberFieldProps) {
   const { cardNumber1, cardNumber2, cardNumber3, cardNumber4 } = useCardForm();
+  const { openModal, closeModal } = useModalContext();
+
   const [validator, setValidator] = useState({
     isValid: false,
     errorMessage: '',
@@ -26,6 +29,14 @@ function CardNumberField({ title, minLength = 0, maxLength = 4, onChange, update
   const cardNumber2Ref = useRef<HTMLInputElement | null>(null);
   const cardNumber3Ref = useRef<HTMLInputElement | null>(null);
   const cardNumber4Ref = useRef<HTMLInputElement | null>(null);
+
+  const onFocus = () => {
+    openModal('virtualCardKeyboard');
+  };
+
+  const onBlur = () => {
+    closeModal();
+  };
 
   const onChangeInterceptor = (e: ChangeEvent<HTMLInputElement>) => {
     if (cardNumber1Ref.current?.value.length === 4 && cardNumber2Ref.current?.value.length === 4) {
@@ -95,6 +106,8 @@ function CardNumberField({ title, minLength = 0, maxLength = 4, onChange, update
           name="cardNumber3"
           onChange={onChangeInterceptor}
           autoComplete="off"
+          onFocus={onFocus}
+          onBlur={onBlur}
           error={!validator.isValid}
         />
         {renderTextDivider({ formerValue: cardNumber3, latterValue: cardNumber4, divider: '-' })}
@@ -108,6 +121,8 @@ function CardNumberField({ title, minLength = 0, maxLength = 4, onChange, update
           name="cardNumber4"
           onChange={onChangeInterceptor}
           autoComplete="off"
+          onFocus={onFocus}
+          onBlur={onBlur}
           error={!validator.isValid}
         />
       </div>

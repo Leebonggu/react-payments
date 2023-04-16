@@ -52,4 +52,4 @@ export type CardCompany = {
   companyIdentification: number;
 };
 
-export type ModalType = 'cardCompanySelectModal';
+export type ModalType = 'cardCompanySelectModal' | 'virtualCardKeyboard';
