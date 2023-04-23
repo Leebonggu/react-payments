@@ -6,11 +6,12 @@ import { useCardForm } from '@/context/CardFormContext';
 import { useCardFormValidator } from '@/context/CardFormValidator';
 import { useModalContext } from '@/context/ModalContext';
 import { cls } from '@/utils';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 function AddCard() {
   const { cardNumber1, cardNumber2, cardNumber3, cardNumber4, year, month, cardOwner, cardCompany } = useCardForm();
   const { isValidCardCompanyForm } = useCardFormValidator();
+
   const [validator, setValidator] = useState({
     isValid: false,
     errorMessage: '',

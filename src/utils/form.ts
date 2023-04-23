@@ -43,7 +43,14 @@ export const textOnlyFormatter = (str: string) => {
   return str.replace(REGEX.NOT_NUMBER, '');
 };
 
-export const nextSiblingInputFocus = (ref: MutableRefObject<HTMLDivElement | null>, index = 0) => {
+export const nextSiblingInputFocus = (
+  ref: MutableRefObject<HTMLDivElement | null>,
+  index = 0,
+  callback?: () => void,
+) => {
+  if (callback) {
+    callback();
+  }
   return ref.current?.nextElementSibling?.querySelectorAll('input')[index]?.focus();
 };
 

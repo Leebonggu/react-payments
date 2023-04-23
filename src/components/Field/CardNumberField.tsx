@@ -1,4 +1,4 @@
-import { ChangeEvent, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { Input } from '@components/Common';
 import { getTargetCardCompanyName, nextSiblingInputFocus, renderTextDivider, stringNumberToSum } from '@/utils';
 import { LIMIT_INPUT_LENGTH, REGEX, VALIDATOR_MESSAGE } from '@/constants';
@@ -6,6 +6,7 @@ import { useCardForm } from '@/context/CardFormContext';
 import FormInputContainer from '../Common/FormInputContainer';
 import { CardInformation } from '@/types';
 import { useModalContext } from '@/context/ModalContext';
+import useCardNumberFieldRef from './hooks/useCardNumberFieldRef';
 
 type CardNumberFieldProps = {
   title: string;
@@ -25,10 +26,7 @@ function CardNumberField({ title, minLength = 0, maxLength = 4, onChange, update
   });
 
   const fieldRef = useRef<HTMLDivElement | null>(null);
-  const cardNumber1Ref = useRef<HTMLInputElement | null>(null);
-  const cardNumber2Ref = useRef<HTMLInputElement | null>(null);
-  const cardNumber3Ref = useRef<HTMLInputElement | null>(null);
-  const cardNumber4Ref = useRef<HTMLInputElement | null>(null);
+  const { cardNumber1Ref, cardNumber2Ref, cardNumber3Ref, cardNumber4Ref } = useCardNumberFieldRef();
 
   const onFocus = () => {
     openModal('virtualCardKeyboard', {
@@ -36,12 +34,11 @@ function CardNumberField({ title, minLength = 0, maxLength = 4, onChange, update
     });
   };
 
-  const onBlur = () => {
-    closeModal();
-  };
-
   const onChangeInterceptor = (e: ChangeEvent<HTMLInputElement>) => {
-    if (cardNumber1Ref.current?.value.length === 4 && cardNumber2Ref.current?.value.length === 4) {
+    if (
+      cardNumber1Ref.current?.value.length === LIMIT_INPUT_LENGTH.CARD_NUMBER.MAX &&
+      cardNumber2Ref.current?.value.length === LIMIT_INPUT_LENGTH.CARD_NUMBER.MAX
+    ) {
       const cardNumberSum = stringNumberToSum(`${cardNumber1Ref.current?.value}${cardNumber2Ref.current?.value}`);
       const targetCompany = getTargetCardCompanyName(cardNumberSum);
 
@@ -53,6 +50,7 @@ function CardNumberField({ title, minLength = 0, maxLength = 4, onChange, update
       cardNumber2Ref.current?.value +
       cardNumber3Ref.current?.value +
       cardNumber4Ref.current?.value;
+
     if (allCardNumber.length < LIMIT_INPUT_LENGTH.CARD_NUMBER.TOTAL) {
       setValidator({
         isValid: false,
@@ -63,11 +61,16 @@ function CardNumberField({ title, minLength = 0, maxLength = 4, onChange, update
         isValid: true,
         errorMessage: '',
       });
-      nextSiblingInputFocus(fieldRef, 0);
     }
 
     onChange(e);
   };
+
+  useEffect(() => {
+    if (validator.isValid) {
+      nextSiblingInputFocus(fieldRef, 0, closeModal);
+    }
+  }, [validator.isValid]);
 
   return (
     <FormInputContainer ref={fieldRef} label={title} isValid={validator.isValid} errorMessage={validator.errorMessage}>
@@ -109,7 +112,6 @@ function CardNumberField({ title, minLength = 0, maxLength = 4, onChange, update
           onChange={onChangeInterceptor}
           autoComplete="off"
           onFocus={onFocus}
-          onBlur={onBlur}
           error={!validator.isValid}
         />
         {renderTextDivider({ formerValue: cardNumber3, latterValue: cardNumber4, divider: '-' })}
@@ -124,7 +126,6 @@ function CardNumberField({ title, minLength = 0, maxLength = 4, onChange, update
           onChange={onChangeInterceptor}
           autoComplete="off"
           onFocus={onFocus}
-          onBlur={onBlur}
           error={!validator.isValid}
         />
       </div>
