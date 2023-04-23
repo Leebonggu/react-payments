@@ -3,9 +3,9 @@ import Modal from './Modal';
 import { useModalContext } from '@/context/ModalContext';
 
 function ModalContainer() {
-  const { open, closeModal, modalType } = useModalContext();
+  const { open } = useModalContext();
 
-  return open ? <ModalPortal>{<Modal onClose={closeModal} modalType={modalType} />}</ModalPortal> : null;
+  return open ? <ModalPortal>{<Modal />}</ModalPortal> : null;
 }
 
 export default ModalContainer;

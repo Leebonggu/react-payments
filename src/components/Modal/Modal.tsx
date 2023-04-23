@@ -1,12 +1,7 @@
 import type { PropsWithChildren } from 'react';
 import CardCompanySelectModal from './CardCompanySelectModal';
 import VirtualKeyboardModal from './VirtualKeyboardModal';
-import { ModalType } from '@/types';
-
-interface Props {
-  onClose(): void;
-  modalType: ModalType | null;
-}
+import { useModalContext } from '@/context/ModalContext';
 
 const modalMap: Record<string, () => JSX.Element> = {
   cardCompanySelectModal: CardCompanySelectModal,
@@ -17,12 +12,13 @@ function ModalBody({ children }: PropsWithChildren) {
   return <div className="bg-black/50 w-96 min-w-[384px] h-[700px] relative backdrop-brightness-110">{children}</div>;
 }
 
-function Modal({ onClose, modalType }: PropsWithChildren<Props>) {
+function Modal() {
+  const { closeModal, modalType } = useModalContext();
   const ModalContent = modalMap[modalType ?? ''] ?? null;
 
   return (
     <div
-      onClick={onClose}
+      onClick={closeModal}
       className="fixed w-screen h-screen top-0 left-0 right-0 flex flex-col justify-center items-center"
     >
       <ModalBody>

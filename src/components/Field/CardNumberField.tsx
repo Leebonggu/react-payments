@@ -25,14 +25,16 @@ function CardNumberField({ title, minLength = 0, maxLength = 4, onChange, update
     errorMessage: '',
   });
 
-  const fieldRef = useRef<HTMLDivElement | null>(null);
-  const { cardNumber1Ref, cardNumber2Ref, cardNumber3Ref, cardNumber4Ref } = useCardNumberFieldRef();
-
   const onFocus = () => {
+    console.log('why focus');
+    console.log('here?');
     openModal('virtualCardKeyboard', {
       a: 1,
     });
   };
+
+  const fieldRef = useRef<HTMLDivElement | null>(null);
+  const { cardNumber1Ref, cardNumber2Ref, cardNumber3Ref, cardNumber4Ref } = useCardNumberFieldRef();
 
   const onChangeInterceptor = (e: ChangeEvent<HTMLInputElement>) => {
     if (
@@ -43,6 +45,8 @@ function CardNumberField({ title, minLength = 0, maxLength = 4, onChange, update
       const targetCompany = getTargetCardCompanyName(cardNumberSum);
 
       updateForm({ cardCompany: targetCompany });
+    } else {
+      updateForm({ cardCompany: '' });
     }
 
     const allCardNumber =
@@ -110,8 +114,8 @@ function CardNumberField({ title, minLength = 0, maxLength = 4, onChange, update
           value={cardNumber3}
           name="cardNumber3"
           onChange={onChangeInterceptor}
-          autoComplete="off"
           onFocus={onFocus}
+          autoComplete="none"
           error={!validator.isValid}
         />
         {renderTextDivider({ formerValue: cardNumber3, latterValue: cardNumber4, divider: '-' })}
@@ -124,8 +128,8 @@ function CardNumberField({ title, minLength = 0, maxLength = 4, onChange, update
           value={cardNumber4}
           name="cardNumber4"
           onChange={onChangeInterceptor}
-          autoComplete="off"
           onFocus={onFocus}
+          autoComplete="none"
           error={!validator.isValid}
         />
       </div>

@@ -6,18 +6,18 @@ import { LIMIT_INPUT_LENGTH } from '@/constants';
 
 import type { FormEvent } from 'react';
 import { useCardForm, useCardFormHandler } from '@/context/CardFormContext';
-// import { useCardListHandler } from '@/context/CardListContext';
-import { useCardFormValidator } from '@/context/CardFormValidator';
+// import { useCardFormValidator } from '@/context/CardFormValidator';
 
 function AddCardForm() {
   const navigate = useNavigate();
 
   const cardForm = useCardForm();
   const { onChange, updateCardForm } = useCardFormHandler();
-  const { isAllValid } = useCardFormValidator();
+  // const { isAllValid } = useCardFormValidator();
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    e.stopPropagation();
 
     const id = crypto.randomUUID();
     navigate(`/complete/${id}`, { state: { cardForm } });
@@ -45,7 +45,7 @@ function AddCardForm() {
       <PasswordField title="비밀번호" onChange={onChange} />
       <div className="w-full flex justify-end">
         <div className="w-20 absolute bottom-2 right-2">
-          <Button type="submit" disabled={!isAllValid} kind="primary">
+          <Button type="submit" disabled={false} kind="primary">
             다음
           </Button>
         </div>
